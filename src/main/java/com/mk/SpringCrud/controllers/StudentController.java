@@ -45,16 +45,16 @@ public class StudentController {
     //POST: http://localhost:8080/api/v1/add
     //body: {"id": 3, "name": "Ann", "age": 544}
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Student add(@RequestBody Student student) {
+    @ResponseBody
+    public Student add(@RequestBody Student student) {
         System.out.println(TAG + " : " + new Gson().toJson(student));
         return studentService.add(student);
     }
 
     //GET: http://localhost:8080/api/v1/students
     @RequestMapping(value = "/students", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Iterable<Student> getAll() {
+    @ResponseBody
+    public Iterable<Student> getAll() {
         // This returns a JSON or XML with the users
         return studentService.getAll();
     }
