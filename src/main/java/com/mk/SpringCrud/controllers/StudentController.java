@@ -5,9 +5,17 @@ import com.mk.SpringCrud.models.Student;
 import com.mk.SpringCrud.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -87,5 +95,45 @@ public class StudentController {
     public Iterable<Student> deleteAll() {
         return studentService.deleteAll();
     }
+
+    @PostMapping(value = "/updatePhoto" )
+    public String updateUserPhoto(@RequestPart(name = "img") MultipartFile img) {
+        System.out.println("Request  update photo "+ img.getOriginalFilename());
+        return "OK";
+    }
+
+    @RequestMapping("/upload")
+    public String upload(@RequestParam("files") MultipartFile[] files) {
+        String uploadDirectory = "/uploads/";
+        StringBuilder fileNames = new StringBuilder();
+        for (MultipartFile file : files) {
+            Path fileNameAndPath = Paths.get(uploadDirectory, file.getOriginalFilename());
+            fileNames.append(file.getOriginalFilename()+" ");
+            try {
+                Files.write(fileNameAndPath, file.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //model.addAttribute("msg", "Successfully uploaded files "+fileNames.toString());
+        return fileNames.toString();
+    }
+
+    /*@RequestMapping("/upload")
+    public String upload(Model model, @RequestParam("files") MultipartFile[] files) {
+        String uploadDirectory = "/uploads/";
+        StringBuilder fileNames = new StringBuilder();
+        for (MultipartFile file : files) {
+            Path fileNameAndPath = Paths.get(uploadDirectory, file.getOriginalFilename());
+            fileNames.append(file.getOriginalFilename()+" ");
+            try {
+                Files.write(fileNameAndPath, file.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        model.addAttribute("msg", "Successfully uploaded files "+fileNames.toString());
+        return "uploadstatusview";
+    }*/
 
 }
